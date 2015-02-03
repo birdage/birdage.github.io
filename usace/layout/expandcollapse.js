@@ -8,59 +8,58 @@ $(document).ready(function(){
 		menuInactiveClass: 'mlpm_inactive'
 	});
 
-	// Full collapse
-	$( '#fullcollapse' ).click(function(){
-		$( '#menu' ).multilevelpushmenu( 'collapse' );
-	});
+	reqUrl = 'http://usace.asa.rocks/services/structure/'
+  
+    var ajax  = $.ajax({
+          type: 'GET',
+          url: reqUrl,  
+          dataType: 'jsonp',
+        })  
+    .success(function( structure ) {
+      $.each( structure, function( val, cat ) {           
+        //loop over each category   
+        if (val == 'oceanography'){
+	        $.each( cat, function( val1, type ) {		    	
+	           item_list = []
+			  var addItems = [{
+					name: val1,
+					icon: 'fa fa-phone-square',
+					link: '#',
+					items: item_list
+			  }];
 
-	// Base expand
-	$( '#baseexpand' ).click(function(){
-		$( '#menu' ).multilevelpushmenu( 'expand' );
-	});
+			 
+		      //loop over type
+		        var st_contain = {
+		      		title: val1,
+					icon: 'fa fa-phone-square',
+					link: '#',
+					items: []					
+				}
+		      $.each( type, function( val2, station ){
+		      	var st = {
+		      		name: val2,
+					icon: 'fa fa-book',
+					link: '#'							
+				}
+				st_contain.items.push(st)
+				console.log(val2)          	
+	          });
+			  item_list.push(st_contain)
+		      addItems.items = item_list
+		      
 
-	// Expand to Men's Clothing
-	$( '#expandmensclothing' ).click(function(){
-		// Use menu title for expanding just in case you know that there
-		// is only one option with such title. If there is more then one
-		// menu has with the same title, expand/collapse invoked with
-		// title name as parameter won't work.
-		$( '#menu' ).multilevelpushmenu( 'expand' , 'Men\'s Clothing' );
-		
-		// More safe way is to use methods like
-		// $( '#menu' ).multilevelpushmenu( 'findmenusbytitle' , 'Mobile Phones' );
-		// and then invoke expand method with desired menu level object
-		// (e.g. if we have several menu objects with title 'Mobile Phones' but
-		// we want to expand the first one)
-		// var $phonemenu = $( '#menu' ).multilevelpushmenu( 'findmenusbytitle' , 'Mobile Phones' ).first();
-		// and then
-		// $( '#menu' ).multilevelpushmenu( 'expand' , $phonemenu );
-	});
+			  console.log(addItems)
 
-	// Expand to Mobile Phones
-	$( '#expandmobilephones' ).click(function(){
-		// Use menu title for expanding just in case you know that there
-		// is only one option with such title. If there is more then one
-		// menu has with the same title, expand/collapse invoked with
-		// title name as parameter won't work.
-		$( '#menu' ).multilevelpushmenu( 'expand' , 'Mobile Phones' );
-		
-		// More safe way is to use methods like
-		// $( '#menu' ).multilevelpushmenu( 'findmenusbytitle' , 'Mobile Phones' );
-		// and then invoke expand method with desired menu level object
-		// (e.g. if we have several menu objects with title 'Mobile Phones' but
-		// we want to expand the first one)
-		// var $phonemenu = $( '#menu' ).multilevelpushmenu( 'findmenusbytitle' , 'Mobile Phones' ).first();
-		// and then
-		// $( '#menu' ).multilevelpushmenu( 'expand' , $phonemenu );
-	});
+	          var $addItem = $( '#menu' ).multilevelpushmenu( 'findmenusbytitle' , 'oceanography' ).first();
+			  $( '#menu' ).multilevelpushmenu( 'additems' , addItems , $addItem , 0 );
+	        });
 
-	// Collapse to the level of 'Devices' menu
-	$( '#collapsedevices' ).click(function(){
-		// Have in mind that this will collapse to the level of 'Devices'
-		// menu (level 1 in our case). So even when open path is not containing
-		// 'Devices' menu it will collapse expanded menus to level 1; it's
-		// basically the same as
-		// $( '#menu' ).multilevelpushmenu( 'collapse' , 1 );
-		$( '#menu' ).multilevelpushmenu( 'collapse' , 'Devices' );
-	});
+	    //if ocean
+    	};
+    //ocean
+     })
+    //end request
+    })
+
 });
